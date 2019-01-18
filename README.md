@@ -2,6 +2,34 @@
 
 > BibTeX bibliography files of all papers referenced by the group
 
+## Installation
+
+These instructions will make all BibTeX files in this repository available to BibTeX on your machine.
+
+The following commands will first locate or create the directory where your TeX installation expects BibTeX files.
+This repository will then be cloned to that location.
+
+```sh
+$ mkdir -p $(kpsewhich -var-value=TEXMFHOME)/bibtex/bib
+$ cd "$_"
+$ git clone https://github.com/krr-up/bibliography.git
+```
+
+If you prefer, you can clone the repository to another location and then create a symbolic link to the path TeX expects.
+
+```sh
+$ cd <preferred location>
+$ git clone https://github.com/krr-up/bibliography.git
+$ mkdir -p $(kpsewhich -var-value=TEXMFHOME)/bibtex/bib
+$ ln -s <preferred location>/bibliography "$_"
+```
+
+Now, you can use the bibliography in your LaTeX file:
+
+```latex
+\bibliography{lit,procs}
+```
+
 ## Contributing New BibTeX Entries
 
 Before creating new BibTeX entries, **check whether they are already contained** in [lit.bib], [procs.bib], or [akku.bib].
