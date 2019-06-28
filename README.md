@@ -81,8 +81,8 @@ $ git submodule update --init --recursive
 
 ## Contributing New BibTeX Entries
 
-Before creating new BibTeX entries, **check whether they are already contained** in [lit.bib], [procs.bib], or [akku.bib].
-If not, add the new entries to [lit.bib] and **open a pull request.**
+Before creating new BibTeX entries, **check whether they are already contained** in [`krr.bib`][krr.bib] or [`procs.bib`][procs.bib].
+If not, add the new entries accordingly and **open a pull request.**
 Please make sure that new BibTeX entries are **in line with the [guidelines](#guidelines-for-new-bibtex-entries)** below.
 We will then review and merge your pull request in a timely fashion.
 
@@ -158,7 +158,7 @@ Don’t abbreviate **journal names.**
 
 > example: `ACM Transactions on Computational Logic` but not `ACM Trans. on Comp. Log.`
 
-Use the **strings** defined in [lit.bib] for journal names.
+Use the **strings** defined in [`krr.bib`][krr.bib] for journal names.
 
 > example: `@STRING{lncs    = "Lecture Notes in Computer Science" }` for use in BibTex entries as `series =	 lncs`
 
@@ -174,8 +174,7 @@ The bibliography style and BibTeX will sort it out uniformly.
 
 Generally speaking, **never copy/paste** the contents of fields from PDF files because this might lead to issues with special characters (for instance, the ligature `ﬁ` might not be rendered at all by LaTeX and BibTeX).
 
-[akku.bib]: akku.bib
-[lit.bib]: lit.bib
+[krr.bib]: krr.bib
 [procs.bib]: procs.bib
 [.latexmkrc]: .latexmkrc
 [krr-up]: https://github.com/krr-up
