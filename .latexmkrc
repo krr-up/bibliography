@@ -1,6 +1,6 @@
 # Ignore any locally installed files to make builds reproducible
 #
-# (? is an deliberately chosen, invalid path. Unsetting the environment
+# (? is a deliberately chosen, invalid path. Unsetting the environment
 # variable or setting it to the empty string would have LaTeX search the
 # default texmf directory location, which we can only avoid by using an
 # invalid path)
