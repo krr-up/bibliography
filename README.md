@@ -48,6 +48,12 @@ export BSTINPUTS="./include//:"
 export TEXINPUTS="./include//:"
 ```
 
+Now, you can use the bibliography in your LaTeX file:
+
+```sh
+\bibliography{krr,procs}
+```
+
 ### Updating the Bibliography in your Paper Repository
 
 You can **bring the latest bibliography updates to your paper repository** as follows:
