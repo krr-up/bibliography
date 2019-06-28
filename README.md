@@ -5,13 +5,13 @@
 ## Usage
 
 The bibliography is meant to be used as a **Git submodule** within your paper repository.
-Conceptually, this means that Git will maintain a copy of the bibliography within a subdirectory of your own repository (we suggest `includes/bibliography`).
+Conceptually, this means that Git will maintain a copy of the bibliography within a subdirectory of your own repository (we suggest `include/bibliography`).
 
 Git submodules are always **locked to a specific commit.**
 In other words, the bibliography **won’t automatically update itself,** even when pulling in the latest changes of your paper repository.
 You’ll have to **manually update the bibliography** whenever necessary.
 
-On another note, **never edit the content of the submodule directly,** that is, within `includes/bibliography`.
+On another note, **never edit the content of the submodule directly,** that is, within `include/bibliography`.
 If you need new entries added, clone the bibliography to a location outside of your paper repository and contribute from there.
 
 Read more about Git submodules on the [GitHub Blog][github-blog-git-submodules] and the in [Pro Git book][pro-git-book-git-submodules].
@@ -20,7 +20,7 @@ Read more about Git submodules on the [GitHub Blog][github-blog-git-submodules] 
 
 **Add the bibliography as a submodule** to your paper repository as follows:
 ```sh
-$ git submodule add ../bibliography includes/bibliography
+$ git submodule add ../bibliography include/bibliography
 ```
 (Replace `../bibliography` with `https://github.com/krr-up/bibliography` if your repository is hosted outside of the [`krr-up` organization][krr-up].)
 
@@ -34,7 +34,7 @@ The bibliography will now stay at the latest state of the `master` branch **at t
 
 ### Using the Bibliography with LaTeX
 
-By default, the LaTeX toolchain won’t attempt to look for the bibliography within `includes/bibliography`.
+By default, the LaTeX toolchain won’t attempt to look for the bibliography within `include/bibliography`.
 If you build your paper with [`latexmk`][latexmk] (we can only recommend that), this can be easily solved.
 Simply copy the [`.latexmkrc`][.latexmkrc] file to the top level of your repository, and LaTeX will automatically find the bibliography if you just run `latexmk`:
 ```sh
@@ -53,11 +53,11 @@ export TEXINPUTS="./include//:"
 You can **bring the latest bibliography updates to your paper repository** as follows:
 
 ```sh
-$ cd includes/bibliography
+$ cd include/bibliography
 $ git fetch
 $ git reset --hard origin/master
 $ cd ../..
-$ git add includes/bibliography
+$ git add include/bibliography
 $ git commit -m "Update bibliography"
 $ git push
 ```
@@ -69,8 +69,8 @@ $ git submodule update --init --recursive
 **every time one of the following happens:**
 - You **clone** your paper repository from scratch.
 - Someone else **updates the bibliography** to a newer version.
-- Files in `includes/bibliography` are **missing** or LaTeX complains about them.
-- `git status` tells you `modified: includes/bibliography (new commits)` and you didn’t expect this.
+- Files in `include/bibliography` are **missing** or LaTeX complains about them.
+- `git status` tells you `modified: include/bibliography (new commits)` and you didn’t expect this.
 - Someone else adds a **new submodule** to your paper repository.
 
 ## Contributing New BibTeX Entries
