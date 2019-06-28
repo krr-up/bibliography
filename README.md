@@ -41,6 +41,13 @@ Simply copy the [`.latexmkrc`][.latexmkrc] file to the top level of your reposit
 $ latexmk -pdf paper.tex
 ```
 
+If you do not use `latexmk`, you need to set the following environment variables in your `.bashrc` or LaTeX IDE instead:
+```sh
+export BIBINPUTS="./include//:"
+export BSTINPUTS="./include//:"
+export TEXINPUTS="./include//:"
+```
+
 ### Updating the Bibliography in your Paper Repository
 
 You can **bring the latest bibliography updates to your paper repository** as follows:
