@@ -1,0 +1,14 @@
+@Book{gabbay7X,
+  author =	 "D. Gabbay",
+  title =	 "Investigations in Intuitionistic Systems",
+  publisher =	 kluwer,
+  year =	 "197X"
+}
+
+
+@InProceedings{grscse06c,
+  author =	 "S. Grell and V. Nikiforova and T. Schaub and J. Selbig",
+  title =	 "Using action languages for representing and reasoning about biological networks",
+  note =	 "Submitted to ECCB'06.",
+  crossref =	 "eccb06"
+}
