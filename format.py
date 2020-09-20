@@ -13,6 +13,14 @@ from bibtexparser.bwriter import BibTexWriter
 from bibtexparser.latexenc import unicode_to_latex_map
 
 
+def check_min_version():
+    '''
+    Ensure that a new enough version of bibtexparser is used.
+    '''
+    vers = bp.__version__.split('.')
+    if (int(vers[0]), int(vers[1])) < (1, 2):
+        raise RuntimeError('The script requires at least bibtexparser version 1.2.')
+
 def is_ascii(x):
     '''
     Reurn true if the given string contains ascii symbols only.
@@ -91,4 +99,5 @@ def format_bib(path):
         bp.dump(db, f, writer)
 
 if __name__ == "__main__":
+    check_min_version()
     format_bib('krr.bib')
