@@ -91,7 +91,7 @@ def format_bib(path):
     writer = BibTexWriter()
     writer.indent = '  '
     writer.order_entries_by = None
-    writer.display_order = ['title', 'author']
+    writer.display_order = ['title', 'author', 'editor']
 
     path, ext = op.splitext(path)
 
@@ -101,3 +101,4 @@ def format_bib(path):
 if __name__ == "__main__":
     check_min_version()
     format_bib('krr.bib')
+    format_bib('procs.bib')
