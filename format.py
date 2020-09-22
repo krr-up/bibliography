@@ -90,7 +90,7 @@ def format_bib(path):
     # write the bibliography
     writer = BibTexWriter()
     writer.indent = '  '
-    writer.order_entries_by = None
+    writer.order_entries_by = ('ID',)
     writer.display_order = ['title', 'author', 'editor']
 
     path, ext = op.splitext(path)
