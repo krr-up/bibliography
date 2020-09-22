@@ -4,7 +4,11 @@ Script using the bibtexparser module to cleanup_record and pretty print our
 bibliography.
 '''
 
-import os.path as op
+import sys
+from io import StringIO
+from argparse import ArgumentParser
+from difflib import ndiff
+from collections import OrderedDict
 
 import bibtexparser as bp
 from bibtexparser.bibdatabase import BibDataStringExpression
@@ -38,7 +42,6 @@ def is_ascii(x):
 UNICODE_TO_LATEX = {key: value
                     for key, value in unicode_to_latex_map.items()
                     if not is_ascii(key)}
-
 
 def apply_on_expression(x, f):
     '''
@@ -74,31 +77,96 @@ def cleanup_record(x):
         x[val] = apply_on_expression(x[val], cleanup_expression)
     return x
 
+def _parser():
+    '''
+    Return a configured bibtex parser.
+    '''
+    parser = BibTexParser()
+    parser.interpolate_strings = False
+    parser.customization = cleanup_record
+    return parser
+
+def _writer():
+    '''
+    Return a configured bibtex writer.
+    '''
+    writer = BibTexWriter()
+    writer.indent = '  '
+    writer.order_entries_by = ('ID',)
+    writer.display_order = ['title', 'author', 'editor']
+    return writer
+
+def _fixdb(db):
+    '''
+    Currently sorts the strings in the database.
+    '''
+    db.strings = OrderedDict(sorted(db.strings.items()))
+    return db
+
 def format_bib(path):
     '''
     Format the given bibliography file.
     '''
     # read bibliography
-    parser = BibTexParser()
-    parser.interpolate_strings = False
-    parser.customization = cleanup_record
     with open(path, "r") as f:
-        db = bp.load(f, parser)
-        db.expand_string = lambda name: name
-
+        db = _fixdb(bp.load(f, _parser()))
 
     # write the bibliography
-    writer = BibTexWriter()
-    writer.indent = '  '
-    writer.order_entries_by = ('ID',)
-    writer.display_order = ['title', 'author', 'editor']
+    with open(path, "w") as f:
+        bp.dump(db, f, _writer())
 
-    path, ext = op.splitext(path)
+def check_bib(path):
+    '''
+    Check if the given bibliography is correctly formatted.
+    '''
+    # read bibliography
+    with open(path, "r") as f:
+        in_ = f.read()
 
-    with open(f"{path}_fmt{ext}", "w") as f:
-        bp.dump(db, f, writer)
+    db = _fixdb(bp.loads(in_, _parser()))
+
+    # write the bibliography
+    out = StringIO()
+    bp.dump(db, out, _writer())
+
+    return [x for x in ndiff(in_.splitlines(), out.getvalue().splitlines()) if x[0] != ' ']
+
+
+def run():
+    '''
+    Run the applications.
+    '''
+    check_min_version()
+
+    parser = ArgumentParser(
+        prog='bibfmt',
+        description='Autoformat and check bibliography.')
+    subparsers = parser.add_subparsers(
+        metavar='command',
+        dest='command',
+        help='available subcommands',
+        required=True)
+    subparsers.add_parser(
+        'check',
+        help='check whether bibliography is correctly formatted')
+    subparsers.add_parser(
+        'format',
+        help='format the bibliography')
+
+    res = parser.parse_args()
+
+    if res.command == "format":
+        format_bib('krr.bib')
+        format_bib('procs.bib')
+        return 0
+
+    assert res.command == "check"
+    diff = check_bib('krr.bib')
+    if diff:
+        for x in diff:
+            print(x, file=sys.stderr)
+        return 1
+    return 0
 
 if __name__ == "__main__":
-    check_min_version()
-    format_bib('krr.bib')
-    format_bib('procs.bib')
+    sys.exit(run())
