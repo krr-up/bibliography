@@ -127,7 +127,7 @@ The bibliography style and BibTeX will sort it out uniformly.
 
 Always run the [bibfmt] script to format entries:
 ```sh
-bibfmt.py format
+./bibfmt.py format
 ```
 
 The script takes care of sorting, indenting, replacing unicode characters, and spacing.
@@ -152,7 +152,7 @@ pip install bibtexparser
 
 # run bibfmt
 conda activate bib
-bibfmt.py format
+python bibfmt.py format
 ```
 
 [krr.bib]: krr.bib
