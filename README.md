@@ -157,5 +157,5 @@ bibfmt.py format
 
 [krr.bib]: krr.bib
 [procs.bib]: procs.bib
-[bibfmt.py]: bibfmt.py
+[bibfmt]: bibfmt.py
 [bibtexparser]: https://github.com/sciunto-org/python-bibtexparser
