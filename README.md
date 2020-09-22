@@ -67,22 +67,22 @@ For **proceedings** (mainly in [procs.bib]), use the following format instead:
 
 ### BibTeX Entries
 
-Use `"` instead of `{` as the **field delimiter.**
+Use `{` instead of `"` as the **field delimiter.**
 
 > example:
 > ```bibtex
 > @InProceedings{marlyn07a,
->   author =	 "J. Marques-Silva and I. Lynce",
->   title =	 "Towards Robust {CNF} Encodings of Cardinality Constraints",
->   pages =	 "483-497",
->   crossref =	 "cp07"
+>   author = {J. Marques-Silva and I. Lynce},
+>   title = {Towards Robust {CNF} Encodings of Cardinality Constraints},
+>   pages = {483-497},
+>   crossref = {cp07}
 > }
 > ```
 
 In the `author` and `editor` fields, **abbreviate first names** to the *first letter* and omit additional first names.
 Spell out last names.
 
-> example: `author = "M. Gebser and B. Kaufmann and T. Schaub"`
+> example: `author = {M. Gebser and B. Kaufmann and T. Schaub}`
 
 In the `title` field, **enclose capital letters** (other than the first letter) that must not be converted to lowercase letters by `{` and `}`.
 
@@ -90,18 +90,18 @@ In the `title` field, **enclose capital letters** (other than the first letter) 
 
 For proceedings with more than one reference, please use **`crossref`s**.
 
-> example: `crossref = "aaai17"`
+> example: `crossref = {aaai17}`
 
 **Conference or workshop titles** should almost always start with “Proceedings of the …”
 
 > example:
 > ```bibtex
 > @Proceedings{aaai17,
->   editor =	 "P. Satinder and S. Markovitch",
->   title =	 "Proceedings of the Thirty-first National Conference on Artificial Intelligence (AAAI'17)",
->   booktitle =	 "Proceedings of the Thirty-first National Conference on Artificial Intelligence (AAAI'17)",
->   publisher =	 "AAAI Press",
->   year =	 2017
+>   editor = {P. Satinder and S. Markovitch},
+>   title = {Proceedings of the Thirty-first National Conference on Artificial Intelligence (AAAI'17)},
+>   booktitle = {Proceedings of the Thirty-first National Conference on Artificial Intelligence (AAAI'17)},
+>   publisher = {AAAI Press},
+>   year = {2017}
 > }
 > ```
 
@@ -111,19 +111,51 @@ Don’t abbreviate **journal names.**
 
 Use the **strings** defined in [krr.bib] for journal names.
 
-> example: `@STRING{lncs    = "Lecture Notes in Computer Science" }` for use in BibTex entries as `series =	 lncs`
+> example: `@STRING{lncs = {Lecture Notes in Computer Science} }` for use in BibTex entries as `series = lncs`
 
-Use LaTeX commands for **special characters** in all fields.
+Use LaTeX commands for **special characters** in all fields avoiding unnecessary braces but putting them around the command.
 
-> example: `J. P{\"a}tynen` but not `J. Pätynen`
+> example: `J. P{\"a}tynen` but not `J. Pätynen`, `J. P\"atynen`, `J. P\"{a}tynen`, nor `J. P{\"{a}}tynen`.
 
 Use `-` rather than `--` for **hyphens** in the pages, volume, and number fields.
 Don’t terminate field contents with `.`.
 The bibliography style and BibTeX will sort it out uniformly.
 
-> example: `pages =	 "203-208"`
+> example: `pages = {203-208}`
 
-Generally speaking, **never copy/paste** the contents of fields from PDF files because this might lead to issues with special characters (for instance, the ligature `ﬁ` might not be rendered at all by LaTeX and BibTeX).
+### Autoformatting
 
-[krr.bib]: lit.bib
+Always run the [bibfmt] script to format entries:
+```sh
+bibfmt.py format
+```
+
+The script takes care of sorting, indenting, replacing unicode characters, and spacing.
+Nevertheless, **always** check the result of the script.
+Especially, when pasting contents from external sources (like titles of PDFs)
+make sure that special characters like ligatures were replaced correctly.
+
+The script requires at least Python 3.6 and the [bibtexparser] 1.2 module.
+It is quite easy to setup with anaconda:
+```sh
+# install anaconda
+wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh
+bash Miniconda3-latest-Linux-x86_64.sh
+# I recommend not to let the installer modify the bashrc but rather add a line
+# like this manually:
+#   source <install-prefix>/conda/etc/profile.d/conda.sh
+
+# setup environment
+conda create -n bib python=3.8 pip
+conda activate bib
+pip install bibtexparser
+
+# run bibfmt
+conda activate bib
+bibfmt.py format
+```
+
+[krr.bib]: krr.bib
 [procs.bib]: procs.bib
+[bibfmt.py]: bibfmt.py
+[bibtexparser]: https://github.com/sciunto-org/python-bibtexparser
