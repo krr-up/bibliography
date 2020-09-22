@@ -115,7 +115,7 @@ Use the **strings** defined in [krr.bib] for journal names.
 
 Use LaTeX commands for **special characters** in all fields avoiding unnecessary braces but putting them around the command.
 
-> example: `J. P{\"a}tynen` but not `J. Pätynen`, `J. P\"atynen`, `J. P\"{a}tynen`, nor `J. P{\"{a}}tynen`.
+> example: `J. P{\"a}tynen` but neither `J. Pätynen`, `J. P\"atynen`, `J. P\"{a}tynen`, nor `J. P{\"{a}}tynen`.
 
 Use `-` rather than `--` for **hyphens** in the pages, volume, and number fields.
 Don’t terminate field contents with `.`.
