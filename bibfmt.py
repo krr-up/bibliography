@@ -161,7 +161,7 @@ def run():
         return 0
 
     assert res.command == "check"
-    diff = check_bib('krr.bib')
+    diff = check_bib('krr.bib') + check_bib('procs.bib')
     if diff:
         for x in diff:
             print(x, file=sys.stderr)
