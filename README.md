@@ -71,7 +71,7 @@ Use `{` instead of `"` as the **field delimiter.**
 
 > example:
 > ```bibtex
-> @InProceedings{marlyn07a,
+> @inproceedings{marlyn07a,
 >   author = {J. Marques-Silva and I. Lynce},
 >   title = {Towards Robust {CNF} Encodings of Cardinality Constraints},
 >   pages = {483-497},
@@ -96,7 +96,7 @@ For proceedings with more than one reference, please use **`crossref`s**.
 
 > example:
 > ```bibtex
-> @Proceedings{aaai17,
+> @proceedings{aaai17,
 >   editor = {P. Satinder and S. Markovitch},
 >   title = {Proceedings of the Thirty-first National Conference on Artificial Intelligence (AAAI'17)},
 >   booktitle = {Proceedings of the Thirty-first National Conference on Artificial Intelligence (AAAI'17)},
@@ -111,7 +111,7 @@ Don’t abbreviate **journal names.**
 
 Use the **strings** defined in [krr.bib] for journal names.
 
-> example: `@STRING{lncs = {Lecture Notes in Computer Science} }` for use in BibTex entries as `series = lncs`
+> example: `@string{lncs = {Lecture Notes in Computer Science}}` for use in BibTex entries as `series = lncs`
 
 Use LaTeX commands for **special characters** in all fields avoiding unnecessary braces but putting them around the command.
 
