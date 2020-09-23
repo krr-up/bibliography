@@ -1,0 +1,28 @@
+name: Check Bibliography
+
+on:
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: checkout
+        uses: actions/checkout@v2
+
+      - name: setup python
+        uses: actions/setup-python@v1
+        with:
+          python-version: 3.8
+
+      - name: install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install wheel
+          pip install bibtexparser
+
+      - name: check the bibliography
+        run: |
+          python bibfmt.py check
