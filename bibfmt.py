@@ -75,6 +75,8 @@ def cleanup_record(x):
         if val in ('ID',):
             continue
         x[val] = apply_on_expression(x[val], cleanup_expression)
+        if val.lower() == 'pages':
+            x[val] = x[val].replace('--', '-')
     return x
 
 def _parser():
