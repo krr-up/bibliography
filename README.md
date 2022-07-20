@@ -135,7 +135,7 @@ Nevertheless, **always** check the result of the script.
 Especially, when pasting contents from external sources (like titles of PDFs)
 make sure that special characters like ligatures were replaced correctly.
 
-The script requires at least Python 3.8 and the [bibtexparser] 1.3 module.
+The script requires at least Python 3.7 and the [bibtexparser] 1.3 module.
 It is quite easy to setup with anaconda:
 ```sh
 # install anaconda
