@@ -52,7 +52,7 @@ def config_special_names(config) -> dict[str, str]:
     special_names = config['special_names']
     for k, name in special_names.items():
         name = [w.strip() for w in name.split('|')]
-        special_names[k] = name[0] if len(name) == 1 else  name_dict_to_str(format_name_dict(splitname(", ".join(name[1:] + [name[0]]))))    
+        special_names[k] = name[0] if len(name) == 1 else name_dict_to_str(format_name_dict(splitname(", ".join(name[1:] + [name[0]]))))    
     return special_names
 
 CONFIG = json.load(open('config_authfmt.json'))
