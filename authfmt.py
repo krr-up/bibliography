@@ -3,7 +3,7 @@
 Script using the bibtexparser module to format author names in our bibliography.
 '''
 import sys
-import json
+import tomllib
 import bibtexparser as bp
 from splitnames import splitname
 from bibfmt import check_min_version, cleanup_record, _parser, _writer
@@ -55,7 +55,7 @@ def config_special_names(config) -> dict[str, str]:
         special_names[k] = name[0] if len(name) == 1 else name_dict_to_str(format_name_dict(splitname(", ".join(name[1:] + [name[0]]))))    
     return special_names
 
-CONFIG = json.load(open('config_authfmt.json'))
+CONFIG = tomllib.load(open('config_authfmt.toml', 'rb'))
 CONFIG_SPECIAL_NAMES = config_special_names(CONFIG)
 
 def format_name(name: str) -> str:
