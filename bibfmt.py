@@ -79,22 +79,22 @@ def cleanup_record(x):
             x[val] = x[val].replace('--', '-')
     return x
 
-def _parser():
+def _parser(customization=cleanup_record):
     '''
     Return a configured bibtex parser.
     '''
     parser = BibTexParser()
     parser.interpolate_strings = False
-    parser.customization = cleanup_record
+    parser.customization = customization
     return parser
 
-def _writer():
+def _writer(sorted_entries=True):
     '''
     Return a configured bibtex writer.
     '''
     writer = BibTexWriter()
     writer.indent = '  '
-    writer.order_entries_by = ('ID',)
+    writer.order_entries_by = ('ID',) if sorted_entries else None
     writer.display_order = ['title', 'author', 'editor']
     return writer
 
