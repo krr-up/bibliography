@@ -1,12 +1,15 @@
 import bibtexparser as bp
 
-def split_latex_to_sections(latex_string: str, strict_mode=True) -> tuple[list[list[str]],list[list[int]]]:
-    '''
+
+def split_latex_to_sections(
+    latex_string: str, strict_mode=True
+) -> tuple[list[list[str]], list[list[int]]]:
+    """
     Split the given latex string into sections.
-    Returns two lists of lists. Each list on the first of those two lists contains the words of a section. 
+    Returns two lists of lists. Each list on the first of those two lists contains the words of a section.
     Each list on the second of those two lists contains the case of each word in the corresponding section: 1 = uppercase, 0 = lowercase, -1 = caseless.
-    '''
-    whitespace = set(' ~\r\n\t')
+    """
+    whitespace = set(" ~\r\n\t")
 
     # We'll iterate over the input once, dividing it into a list of words for
     # each comma-separated section. We'll also calculate the case of each word
@@ -24,7 +27,7 @@ def split_latex_to_sections(latex_string: str, strict_mode=True) -> tuple[list[l
     nameiter = iter(latex_string)
     for char in nameiter:
         # An escape.
-        if char == '\\':
+        if char == "\\":
             escaped = next(nameiter)
 
             # BibTeX doesn't allow whitespace escaping. Copy the slash and fall
@@ -53,7 +56,7 @@ def split_latex_to_sections(latex_string: str, strict_mode=True) -> tuple[list[l
                 continue
 
         # Start of a braced expression.
-        if char == '{':
+        if char == "{":
             level += 1
             word.append(char)
             bracestart = True
@@ -65,14 +68,16 @@ def split_latex_to_sections(latex_string: str, strict_mode=True) -> tuple[list[l
         bracestart = False
 
         # End of a braced expression.
-        if char == '}':
+        if char == "}":
             # Check and reduce the level.
             if level:
                 level -= 1
             else:
                 if strict_mode:
-                    raise bp.customization.InvalidName("Unmatched closing brace in name {{{0}}}.".format(name))
-                word.insert(0, '{')
+                    raise bp.customization.InvalidName(
+                        "Unmatched closing brace in name {{{0}}}.".format(name)
+                    )
+                word.insert(0, "{")
 
             # Update the state, append the character, and move on.
             controlseq = False
@@ -101,10 +106,10 @@ def split_latex_to_sections(latex_string: str, strict_mode=True) -> tuple[list[l
 
         # End of a word.
         # NB. we know we're not in a brace here due to the previous case.
-        if char == ',' or char in whitespace:
+        if char == "," or char in whitespace:
             # Don't add empty words due to repeated whitespace.
             if word:
-                sections[-1].append(''.join(word))
+                sections[-1].append("".join(word))
                 word = []
                 cases[-1].append(case)
                 case = -1
@@ -112,12 +117,14 @@ def split_latex_to_sections(latex_string: str, strict_mode=True) -> tuple[list[l
                 specialchar = False
 
             # End of a section.
-            if char == ',':
+            if char == ",":
                 if len(sections) < 3:
                     sections.append([])
                     cases.append([])
                 elif strict_mode:
-                    raise bp.customization.InvalidName("Too many commas in the name {{{0}}}.".format(name))
+                    raise bp.customization.InvalidName(
+                        "Too many commas in the name {{{0}}}.".format(name)
+                    )
             continue
 
         # Regular character.
@@ -131,16 +138,18 @@ def split_latex_to_sections(latex_string: str, strict_mode=True) -> tuple[list[l
     # Unterminated brace?
     if level:
         if strict_mode:
-            raise bp.customization.InvalidName("Unterminated opening brace in the name {{{0}}}.".format(name))
+            raise bp.customization.InvalidName(
+                "Unterminated opening brace in the name {{{0}}}.".format(name)
+            )
         while level:
-            word.append('}')
+            word.append("}")
             level -= 1
 
     # Handle the final word.
     if word:
-        sections[-1].append(''.join(word))
+        sections[-1].append("".join(word))
         cases[-1].append(case)
-    
+
     return sections, cases
 
 
@@ -197,7 +206,9 @@ def splitname(name, strict_mode=True):
     if not sections[-1]:
         # Trailing comma?
         if (len(sections) > 1) and strict_mode:
-            raise bp.customization.InvalidName("Trailing comma at end of name {{{0}}}.".format(name))
+            raise bp.customization.InvalidName(
+                "Trailing comma at end of name {{{0}}}.".format(name)
+            )
         sections.pop(-1)
         cases.pop(-1)
 
@@ -206,7 +217,7 @@ def splitname(name, strict_mode=True):
         return {}
 
     # Initialise the output dictionary.
-    parts = {'first': [], 'last': [], 'von': [], 'jr': []}
+    parts = {"first": [], "last": [], "von": [], "jr": []}
 
     # Form 1: "First von Last"
     # print(f"{sections=}")
@@ -216,49 +227,50 @@ def splitname(name, strict_mode=True):
         cases = cases[0]
         # One word only: last cannot be empty.
         if len(p0) == 1:
-            parts['last'] = p0
+            parts["last"] = p0
 
         # Two words: must be first and last.
         elif len(p0) == 2:
-            parts['first'] = p0[:1]
-            parts['last'] = p0[1:]
+            parts["first"] = p0[:1]
+            parts["last"] = p0[1:]
 
         # Need to use the cases to figure it out.
         elif len(p0) > 2 and p0[1][1] == ".":
-            parts['first'] = p0[:2]
-            parts['last'] = p0[2:]
+            parts["first"] = p0[:2]
+            parts["last"] = p0[2:]
         else:
             num_capitals = sum(cases)
             if num_capitals > 2:
-                capital_position = [i for i,e in enumerate(cases) if e]
+                capital_position = [i for i, e in enumerate(cases) if e]
                 third_to_last_captilized = capital_position[-3]
                 second_to_last_captilized = capital_position[-2]
-                parts['first'] = p0[:third_to_last_captilized+1]
-                parts['von'] = p0[third_to_last_captilized+1:second_to_last_captilized]
-                parts['last'] = p0[second_to_last_captilized:]
+                parts["first"] = p0[: third_to_last_captilized + 1]
+                parts["von"] = p0[
+                    third_to_last_captilized + 1 : second_to_last_captilized
+                ]
+                parts["last"] = p0[second_to_last_captilized:]
             else:
-                parts['first'] = p0[:1]
-                parts['last'] = p0[1:]
-
+                parts["first"] = p0[:1]
+                parts["last"] = p0[1:]
 
     # Form 2 ("von Last, First") or 3 ("von Last, jr, First")
     else:
         # As long as there is content in the first name partition, use it as-is.
         first = sections[-1]
         if first and first[0]:
-            parts['first'] = first
+            parts["first"] = first
 
         # And again with the jr part.
         if len(sections) == 3:
             jr = sections[-2]
             if jr and jr[0]:
-                parts['jr'] = jr
+                parts["jr"] = jr
 
         # Last name cannot be empty; if there is only one word in the first
         # partition, we have to use it for the last name.
         last = sections[0]
         if len(last) == 1:
-            parts['last'] = last
+            parts["last"] = last
 
         # Have to look at the cases to figure it out.
         else:
@@ -271,12 +283,12 @@ def splitname(name, strict_mode=True):
                 split = len(lcases) - lcases[::-1].index(0)
                 if split == len(lcases):
                     split = 0  # Last cannot be empty.
-                parts['von'] = sections[0][:split]
-                parts['last'] = sections[0][split:]
+                parts["von"] = sections[0][:split]
+                parts["last"] = sections[0][split:]
 
             # All uppercase => all last.
             else:
-                parts['last'] = sections[0]
+                parts["last"] = sections[0]
 
     # Done.
     return parts
