@@ -1,6 +1,20 @@
 #!/usr/bin/env python3
 """
-Script using the bibtexparser module to format author names in our bibliography.
+Script using the bibtexparser module to format author names in our
+bibliography.
+- It abbreviates first names: Roland Kaminski becomes R. Kaminski.
+- It generates BibTeX keys from the author names and the year using the
+  bibliography conventions
+- It replaces journal names by their corresponding BibTeX strings
+- It finds crossrefs in the procs.bib file and uses them for crossref field
+- It flags repeated entries
+
+It does well with most names. In particular, all the names composed of two
+words. For names with more than two words the splitting of first/last names is
+in general ambiguous, so you may need to fix some of them manually:
+`Juan Carlos Nieves` should be parsed as `{Juan Carlos} Nieves`
+`Manuel Ojeda Aciego` as `Manuel {Ojeda Aciego}`.
+Protected special names can be added to the `config_authfmt.toml` file.
 """
 import sys
 import os
