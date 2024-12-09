@@ -12,7 +12,7 @@ bibtex rules, so you may need to fix some of them manually: The name
 It should be parsed as `Manuel {Ojeda Aciego}`. 
 
 Names that do not follow the bibtex rules but already present in the bibliography are parsed correctly.
-For instance, if `{Manuel Ojeda} Aciego` is already present in the bibliography in that format, new
+For instance, if `Manuel {Ojeda Aciego}` is already present in the bibliography in that format, new
 entries with `Manuel Ojeda Aciego` will be parsed correctly. This means that names that do not follow
  the bibtex rules only need to be protected by braces the first time they are introduced in the bibliography.
 """
