@@ -240,8 +240,15 @@ def splitname(name, strict_mode=True):
             parts["last"] = p0[2:]
         else:
             num_capitals = sum(cases)
-            if num_capitals > 2:
-                capital_position = [i for i, e in enumerate(cases) if e]
+            capital_position = [i for i, e in enumerate(cases) if e]
+            if cases[0] == 0 and num_capitals >= 1:
+                parts["von"] = p0[0 : capital_position[0]]
+                parts["last"] = p0[capital_position[0] :]
+            elif cases[1] == 0 and num_capitals >= 1:
+                parts["first"] = p0[0:1]
+                parts["von"] = p0[1 : capital_position[1]]
+                parts["last"] = p0[capital_position[1] :]
+            elif num_capitals > 2:
                 third_to_last_captilized = capital_position[-3]
                 second_to_last_captilized = capital_position[-2]
                 parts["first"] = p0[: third_to_last_captilized + 1]
@@ -292,3 +299,8 @@ def splitname(name, strict_mode=True):
 
     # Done.
     return parts
+
+
+# print(splitname("John von Neumann"))
+# print(splitname("F. de Boer"))
+# print(splitname("L Farinnas del Cerro"))

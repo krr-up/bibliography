@@ -34,12 +34,27 @@ def format_first_name(name: str) -> str:
 
 def format_name_dict(name: dict) -> dict:
     """
-    Format name reprented as a dictionary.
+    Format firstname represented as a dictionary.
     """
     if "first" in name:
         first_name = " ".join(name["first"])
         name["first"] = [format_first_name(first_name)]
     return name
+
+
+def match_braces(name: str) -> list[tuple[int, int]]:
+    """
+    Return the list of matching braces in the given string.
+    """
+    stack = []
+    matched_braces = []
+    for i, c in enumerate(name):
+        if c == "{":
+            stack.append(i)
+        elif c == "}":
+            if stack:
+                matched_braces.append((stack.pop(), i))
+    return matched_braces
 
 
 def name_dict_to_str(name: dict) -> str:
@@ -49,12 +64,23 @@ def name_dict_to_str(name: dict) -> str:
     first = " ".join(name.get("first", []))
     von = " ".join(name.get("von", []))
     last = " ".join(name.get("last", []))
+    n = len(last) - 1
+    if " " in last:
+        matched_braces = match_braces(last)
+        if (
+            not matched_braces
+            or not matched_braces[-1][0] == 0
+            or not matched_braces[-1][1] == n
+        ):
+            last = f"{{{last}}}"
     jr = " ".join(name.get("jr", []))
     previous = first != ""
     if previous and von:
         von = f" {von}"
+    previous = previous or von != ""
     if previous and last:
         last = f" {last}"
+    previous = previous or last != ""
     if previous and jr:
         jr = f" {jr}"
     return f"{first}{von}{last}{jr}"
@@ -67,6 +93,14 @@ def config_special_names(config) -> dict[str, str]:
     special_names = config["special_names"]
     for k, name in special_names.items():
         name = [w.strip() for w in name.split("|")]
+        if len(name) == 1 and " " in name[0]:
+            matched_braces = match_braces(name[0])
+            if (
+                not matched_braces
+                or not matched_braces[-1][0] == 0
+                or not matched_braces[-1][1] == len(name[0]) - 1
+            ):
+                name[0] = f"{{{name[0]}}}"
         special_names[k] = (
             name[0]
             if len(name) == 1
@@ -87,8 +121,9 @@ def format_name(name: str) -> str:
     """
     Format the given string containing a person name.
     """
-    if name in CONFIG_SPECIAL_NAMES:
-        return CONFIG_SPECIAL_NAMES[name]
+    alpha_name = name.replace("{", "").replace("}", "")
+    if alpha_name in CONFIG_SPECIAL_NAMES:
+        return CONFIG_SPECIAL_NAMES[alpha_name]
     return name_dict_to_str(format_name_dict(splitname(name)))
 
 
