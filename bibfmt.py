@@ -290,6 +290,22 @@ class NameFormatter:
                 return name_dict
         return name_dict
 
+    @staticmethod
+    def _has_unprotected_blank(s: str) -> bool:
+        """
+        Return true if the given string contains an unprotected blank.
+        """
+        stack = []
+        for c in s:
+            if c == "{":
+                stack.append(c)
+            elif c == "}":
+                if stack and stack[-1] == "{":
+                    stack.pop()
+            elif c == " " and not stack:
+                return True
+        return False
+
     def _join_name(self, name: dict) -> str:
         """
         Concatenate the name represented as a dictionary of its bibtex field into a string.
@@ -302,14 +318,8 @@ class NameFormatter:
             von = f"{{{von[0]}}}{von[1:]}"
         last = " ".join(name.get("last", []))
         n = len(last) - 1
-        if " " in last:
-            matched_braces = self._match_braces(last)
-            if (
-                not matched_braces
-                or not matched_braces[-1][0] == 0
-                or not matched_braces[-1][1] == n
-            ):
-                last = f"{{{last}}}"
+        if NameFormatter._has_unprotected_blank(last):
+            last = f"{{{last}}}"
         jr = " ".join(name.get("jr", []))
         previous = first != ""
         if previous and von:
