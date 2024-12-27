@@ -3,6 +3,7 @@
 Script to cleanup bibtex records and pretty print them.
 """
 
+import re
 import sys
 from io import StringIO
 from argparse import ArgumentParser
@@ -14,7 +15,7 @@ import bibtexparser as bp
 from bibtexparser.bibdatabase import BibDataStringExpression
 from bibtexparser.bparser import BibTexParser
 from bibtexparser.bwriter import BibTexWriter
-from bibtexparser.latexenc import unicode_to_latex_map
+from bibtexparser.latexenc import unicode_to_latex_map, unicode_to_crappy_latex1
 from bibtexparser.customization import splitname
 
 
@@ -126,6 +127,38 @@ def format_bib(path):
     # write the bibliography
     with open(path, "w") as f:
         bp.dump(db, f, _writer())
+
+
+def __init_latex_special_symbol_corrections_map():
+
+    pattern = re.compile(
+        "|".join(re.escape(k) for k in [r"\' ", r"\= ", r"\~ ", r"\^ ", r"\. ", r"\" "])
+    )
+
+    tmp = (
+        (f"{{{value}}}", unicode_to_latex_map[key])
+        for key, value in unicode_to_crappy_latex1
+        if key in unicode_to_latex_map
+        and value != unicode_to_latex_map[key]
+        and not is_ascii(key)
+        and not re.search(pattern, unicode_to_latex_map[key])
+    )
+
+    return {key: value for key, value in tmp if key != value}
+
+
+LATEX_SPECIAL_SYMBOL_CORRECTIONS_MAP: dict[str, str] = (
+    __init_latex_special_symbol_corrections_map()
+)
+LATEX_SPECIAL_SYMBOL_CORRECTIONS_RE = re.compile(
+    "|".join(re.escape(k) for k in LATEX_SPECIAL_SYMBOL_CORRECTIONS_MAP.keys())
+)
+
+
+def latex_fix_special_symbols(text: str) -> str:
+    return LATEX_SPECIAL_SYMBOL_CORRECTIONS_RE.sub(
+        lambda m: LATEX_SPECIAL_SYMBOL_CORRECTIONS_MAP[m.group(0)], text
+    )
 
 
 class NameFormatter:
@@ -294,6 +327,8 @@ class NameFormatter:
         if "first" in name_dict:
             first_name = " ".join(name_dict["first"])
             name_dict["first"] = [self._format_first_name(first_name)]
+        for part, value in name_dict.items():
+            name_dict[part] = [latex_fix_special_symbols(s) for s in value]
         return self._join_name(name_dict)
 
     def __call__(self, names: str) -> str:
