@@ -1,3 +1,5 @@
 *~
 auto/
 legacy/
+__pycache__/
+.venv
