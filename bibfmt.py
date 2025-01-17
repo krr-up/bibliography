@@ -3,6 +3,7 @@
 Script to cleanup bibtex records and pretty print them.
 """
 
+import re
 import sys
 from io import StringIO
 from argparse import ArgumentParser
@@ -73,6 +74,11 @@ def cleanup_expression(x):
     return "".join(ret)
 
 
+ACCENTS = "".join(re.escape(k) for k in """  =  ~  ^  .  "  '  """.split())
+WHITESPACE_RE = re.compile(r"\s+")
+ACCENTS_RE = re.compile(r"\{\\([" + ACCENTS + r"])\{([a-zA-Z])\}\}")
+
+
 def cleanup_record(x):
     """
     Cleanup a record as returned by the bibtexparser module.
@@ -81,6 +87,8 @@ def cleanup_record(x):
         if val in ("ID",):
             continue
         x[val] = apply_on_expression(x[val], cleanup_expression)
+        x[val] = apply_on_expression(x[val], lambda x: WHITESPACE_RE.sub(" ", x))
+        x[val] = apply_on_expression(x[val], lambda x: ACCENTS_RE.sub(r"{\\\1\2}", x))
         if val.lower() == "pages":
             x[val] = x[val].replace("--", "-")
     return x
