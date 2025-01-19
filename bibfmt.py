@@ -21,8 +21,10 @@ from bibtexparser.customization import splitname
 
 def check_min_version():
     """
-    Ensure that a new enough version of bibtexparser is used.
+    Ensure that a new enough version of python and bibtexparser is used.
     """
+    if sys.version_info <= (3, 10):
+        raise SystemExit("The script requires at least python version 3.10.")
     vers = bp.__version__.split(".")
     if (int(vers[0]), int(vers[1])) < (1, 2):
         raise RuntimeError("The script requires at least bibtexparser version 1.2.")
