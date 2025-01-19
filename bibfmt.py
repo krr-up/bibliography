@@ -27,7 +27,7 @@ def check_min_version():
         raise SystemExit("The script requires at least python version 3.10.")
     vers = bp.__version__.split(".")
     if (int(vers[0]), int(vers[1])) < (1, 2):
-        raise RuntimeError("The script requires at least bibtexparser version 1.2.")
+        raise SystemExit("The script requires at least bibtexparser version 1.2.")
 
 
 def is_ascii(x):
