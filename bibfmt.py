@@ -24,10 +24,10 @@ def check_min_version():
     Ensure that a new enough version of python and bibtexparser is used.
     """
     if sys.version_info < (3, 10):
-        raise SystemExit("The script requires at least python version 3.10.")
+        sys.exit("The script requires at least python version 3.10.")
     vers = bp.__version__.split(".")
     if (int(vers[0]), int(vers[1])) < (1, 2):
-        raise SystemExit("The script requires at least bibtexparser version 1.2.")
+        sys.exit("The script requires at least bibtexparser version 1.2.")
 
 
 def is_ascii(x):
@@ -39,15 +39,6 @@ def is_ascii(x):
         return True
     except UnicodeEncodeError:
         return False
-
-
-# Map from unicode symbols to latex expressions.
-#
-# The bibtexparser.latexenc module also maps some ascii characters to unicode
-# symbols. Such characters are ignored in the map.
-UNICODE_TO_LATEX = {
-    key: value for key, value in unicode_to_latex_map.items() if not is_ascii(key)
-}
 
 
 def apply_on_expression(x, f):
@@ -62,10 +53,22 @@ def apply_on_expression(x, f):
     return x
 
 
+# Map from unicode symbols to latex expressions.
+#
+# The bibtexparser.latexenc module also maps some ascii characters to unicode
+# symbols. Such characters are ignored in the map.
+UNICODE_TO_LATEX = {
+    key: value for key, value in unicode_to_latex_map.items() if not is_ascii(key)
+}
+ACCENTS = "".join(re.escape(k) for k in """  =  ~  ^  .  "  '  """.split())
+WHITESPACE_RE = re.compile(r"\s+")
+ACCENTS_RE = re.compile(r"\{\\([" + ACCENTS + r"])\{([a-zA-Z])\}\}")
+
+
 def cleanup_expression(x):
     """
-    Convert the given string containing unicode symbols into a string with
-    latex escapes only.
+    Convert the given string containing unicode symbols into a single line
+    string with latex escapes only.
     """
     ret = []
     for char in x:
@@ -73,12 +76,11 @@ def cleanup_expression(x):
             ret.append(char)
         else:
             ret.append(UNICODE_TO_LATEX.get(char, char))
-    return "".join(ret)
 
-
-ACCENTS = "".join(re.escape(k) for k in """  =  ~  ^  .  "  '  """.split())
-WHITESPACE_RE = re.compile(r"\s+")
-ACCENTS_RE = re.compile(r"\{\\([" + ACCENTS + r"])\{([a-zA-Z])\}\}")
+    res = "".join(ret)
+    res = WHITESPACE_RE.sub(" ", res)
+    res = ACCENTS_RE.sub(r"{\\\1\2}", x)
+    return res
 
 
 def cleanup_record(x):
@@ -89,8 +91,6 @@ def cleanup_record(x):
         if val in ("ID",):
             continue
         x[val] = apply_on_expression(x[val], cleanup_expression)
-        x[val] = apply_on_expression(x[val], lambda x: WHITESPACE_RE.sub(" ", x))
-        x[val] = apply_on_expression(x[val], lambda x: ACCENTS_RE.sub(r"{\\\1\2}", x))
         if val.lower() == "pages":
             x[val] = x[val].replace("--", "-")
     return x
