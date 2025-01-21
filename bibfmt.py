@@ -60,9 +60,8 @@ def apply_on_expression(x, f):
 UNICODE_TO_LATEX = {
     key: value for key, value in unicode_to_latex_map.items() if not is_ascii(key)
 }
-ACCENTS = "".join(re.escape(k) for k in """  =  ~  ^  .  "  '  """.split())
-WHITESPACE_RE = re.compile(r"\s+")
-ACCENTS_RE = re.compile(r"\{\\([" + ACCENTS + r"])\{([a-zA-Z])\}\}")
+# Character class for latex accents.
+LATEX_ACCENTS = "".join(re.escape(k) for k in "=~^.\"'")
 
 
 def cleanup_expression(x):
@@ -78,8 +77,8 @@ def cleanup_expression(x):
             ret.append(UNICODE_TO_LATEX.get(char, char))
 
     res = "".join(ret)
-    res = WHITESPACE_RE.sub(" ", res)
-    res = ACCENTS_RE.sub(r"{\\\1\2}", x)
+    res = re.sub(r"\s+", " ", res)
+    res = re.sub(r"\{\\([" + LATEX_ACCENTS + r"])\{([a-zA-Z])\}\}", r"{\\\1\2}", x)
     return res
 
 
