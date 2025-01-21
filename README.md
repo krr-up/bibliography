@@ -104,7 +104,7 @@ documentation][bibtex].
 > - `Manuel {Ojeda Aciego}`        -> `M. {Ojeda Aciego}`
 > - `John von Neumann`             -> `J. von Neumann`
 > - `Allen {V}an Gelder`           -> `A. {V}an Gelder`
-> - `Luis Fari{\~{n}}as del Cerro` -> `L. {Fari{\~{n}}as del Cerro}`
+> - `Luis Fari{\~n}as del Cerro` -> `L. {Fari{\~n}as del Cerro}`
 > - `Marcello D'Agostino`          -> `M. {D}'\relax Agostino`
 
 In the `title` field, **enclose capital letters** (other than the first letter)
@@ -141,9 +141,9 @@ Use the **strings** defined in [krr.bib] for journal names.
 > example: `@string{lncs = {Lecture Notes in Computer Science}}` for use in
 > BibTex entries as `series = lncs`
 
-Use LaTeX commands for **special characters** in all fields putting braces around the command.
+Use LaTeX commands for **special characters** in all fields putting (a single pair of) braces around the command.
 
-> example: `J. P{\"a}tynen` or `J. P{\"{a}}tynen` but neither `J. Pätynen`, `J. P\"atynen`, `J. P\"{a}tynen`, nor `J. P{{\"a}}tynen`.
+> example: `J. P{\"a}tynen` but neither `J. P{\"{a}}tynen`, `J. Pätynen`, `J. P\"atynen`, `J. P\"{a}tynen`, nor `J. P{{\"a}}tynen`.
 
 Use `-` rather than `--` for **hyphens** in the pages, volume, and number fields.
 Don’t terminate field contents with `.`.

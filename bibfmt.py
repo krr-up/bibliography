@@ -3,6 +3,7 @@
 Script to cleanup bibtex records and pretty print them.
 """
 
+import re
 import sys
 from io import StringIO
 from argparse import ArgumentParser
@@ -20,11 +21,13 @@ from bibtexparser.customization import splitname
 
 def check_min_version():
     """
-    Ensure that a new enough version of bibtexparser is used.
+    Ensure that a new enough version of python and bibtexparser is used.
     """
+    if sys.version_info < (3, 10):
+        sys.exit("The script requires at least python version 3.10.")
     vers = bp.__version__.split(".")
     if (int(vers[0]), int(vers[1])) < (1, 2):
-        raise RuntimeError("The script requires at least bibtexparser version 1.2.")
+        sys.exit("The script requires at least bibtexparser version 1.2.")
 
 
 def is_ascii(x):
@@ -36,15 +39,6 @@ def is_ascii(x):
         return True
     except UnicodeEncodeError:
         return False
-
-
-# Map from unicode symbols to latex expressions.
-#
-# The bibtexparser.latexenc module also maps some ascii characters to unicode
-# symbols. Such characters are ignored in the map.
-UNICODE_TO_LATEX = {
-    key: value for key, value in unicode_to_latex_map.items() if not is_ascii(key)
-}
 
 
 def apply_on_expression(x, f):
@@ -59,10 +53,21 @@ def apply_on_expression(x, f):
     return x
 
 
+# Map from unicode symbols to latex expressions.
+#
+# The bibtexparser.latexenc module also maps some ascii characters to unicode
+# symbols. Such characters are ignored in the map.
+UNICODE_TO_LATEX = {
+    key: value for key, value in unicode_to_latex_map.items() if not is_ascii(key)
+}
+# Character class for latex accents.
+LATEX_ACCENTS = "".join(re.escape(k) for k in "=~^.\"'-")
+
+
 def cleanup_expression(x):
     """
-    Convert the given string containing unicode symbols into a string with
-    latex escapes only.
+    Convert the given string containing unicode symbols into a single line
+    string with latex escapes only.
     """
     ret = []
     for char in x:
@@ -70,7 +75,15 @@ def cleanup_expression(x):
             ret.append(char)
         else:
             ret.append(UNICODE_TO_LATEX.get(char, char))
-    return "".join(ret)
+
+    res = "".join(ret)
+    # NOTE:
+    # - replace whitespace
+    # - this might introduce unexpected spaces
+    res = re.sub(r"\s+", " ", res)
+    # fix latex accents
+    res = re.sub(r"\{\\([" + LATEX_ACCENTS + r"])\{(\\?[a-zA-Z])\}\}", r"{\\\1\2}", res)
+    return res
 
 
 def cleanup_record(x):
