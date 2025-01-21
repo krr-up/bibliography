@@ -61,7 +61,7 @@ UNICODE_TO_LATEX = {
     key: value for key, value in unicode_to_latex_map.items() if not is_ascii(key)
 }
 # Character class for latex accents.
-LATEX_ACCENTS = "".join(re.escape(k) for k in "=~^.\"'")
+LATEX_ACCENTS = "".join(re.escape(k) for k in "=~^.\"'-")
 
 
 def cleanup_expression(x):
@@ -77,8 +77,12 @@ def cleanup_expression(x):
             ret.append(UNICODE_TO_LATEX.get(char, char))
 
     res = "".join(ret)
+    # NOTE:
+    # - replace whitespace
+    # - this might introduce unexpected spaces
     res = re.sub(r"\s+", " ", res)
-    res = re.sub(r"\{\\([" + LATEX_ACCENTS + r"])\{([a-zA-Z])\}\}", r"{\\\1\2}", x)
+    # fix latex accents
+    res = re.sub(r"\{\\([" + LATEX_ACCENTS + r"])\{(\\?[a-zA-Z])\}\}", r"{\\\1\2}", res)
     return res
 
 
