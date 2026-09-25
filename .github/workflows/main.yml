@@ -21,7 +21,7 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install wheel
-          pip install bibtexparser~=1.0
+          pip install bibtexparser~=1.2
 
       - name: check the bibliography
         run: |
